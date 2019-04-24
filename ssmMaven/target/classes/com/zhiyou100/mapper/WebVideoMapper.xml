@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="com.zhiyou100.mapper.WebVideoMapper">
+	
+	<!-- 查询学科信息表Subject 通过id -->
+	<resultMap type="Subject" id="subjectId">
+		<id column="id" property="id"/>
+		<result column="subject_name" property="subjectName" />
+		<collection property="course" ofType="Course">
+			<result column="course_title" property="courseTitle"/>
+			<result column="course_desc" property="couserDesc"/>
+			<result column="subject_id" property="subjectId"/>
+			<collection property="videos" ofType="Video">
+				<id column="vid" property="id"/>
+				<result column="title" property="title"/>
+				<result column="detail" property="detail"/>
+				<result column="time" property="time"/>
+				<result column="speaker_id" property="speakerId"/>
+				<result column="course_id" property="courseId"/>
+				<result column="video_url" property="videoUrl"/>
+				<result column="image_url" property="imageUrl"/>
+				<result column="play_num" property="playNum"/>
+				<association property="speaker" javaType="Speaker">
+					<result column="speaker_name" property="speakerName"/>
+					<result column="speaker_job" property="speakerJob"/>
+				</association>
+			</collection>
+		</collection>
+	</resultMap>
+	<select id="findSubjectById" parameterType="int" resultMap="subjectId">
+		select 
+		s.id,s.subject_name,
+		c.course_title,c.course_desc,c.subject_id,
+		sp.speaker_name,sp.speaker_job,
+		v.id vid,v.title,v.detail,v.time,v.speaker_id,v.course_id,v.video_url,v.image_url,v.play_num  
+		from subject s,course c,speaker sp, video v 
+		where 
+		s.id=c.subject_id 
+		and c.id=v.course_id
+		and sp.id=v.speaker_id
+		and s.id=#{id}
+	</select>
+	<!--  通过id展示视频信息 -->
+	<resultMap type="Video" id="showVideo">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="detail" property="detail"/>
+		<result column="time" property="time"/>
+		<result column="speaker_id" property="speakerId"/>
+		<result column="course_id" property="courseId"/>
+		<result column="video_url" property="videoUrl"/>
+		<result column="image_url" property="imageUrl"/>
+		<result column="play_num" property="playNum"/>
+		<association property="speaker" javaType="Speaker">
+			<result column="speaker_name" property="speakerName"/>
+			<result column="speaker_job" property="speakerJob"/>
+		</association>
+	</resultMap>
+	<select id="showVideoById" parameterType="int" resultMap="showVideo">
+		select 
+		v.id,v.title,v.detail,v.time,v.speaker_id,v.course_id,v.video_url,v.image_url,v.play_num ,
+    	sp.speaker_name,sp.speaker_job 
+		from speaker sp, video v 
+		where 
+		sp.id=v.speaker_id
+		and v.id=#{id}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
